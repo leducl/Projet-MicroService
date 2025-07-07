@@ -1,5 +1,8 @@
 # Message Service (Groupe 2)
 
+Membres : 
+Leduc Léo - Balmes Bastien - Lours Simon - Pedrero Axel
+
 Ce micro-service fait partie de l’architecture IRC distribuée de CanaDuck. Il gère
 les messages publics et privés, les réactions, la modification, la suppression,
 les fils de discussion, les épinglés et la recherche.
@@ -90,6 +93,33 @@ message-service/
   EXPOSE 5002
   CMD ["python", "app.py"]
   ```
+
+---
+
+## 🚀 Installation et lancement
+
+1. **En local** (sans Docker) :
+
+   ```bash
+   git clone <url-de-votre-dépôt>
+   cd message-service
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   export SECRET_KEY="ce-projet-est-horrible"
+   python app.py
+   ```
+
+   Le service écoute sur `http://localhost:5002`.
+
+2. **Avec Docker** :
+
+   ```bash
+   docker build -t message-service .
+   docker run -d -p 5002:5002 \
+     -e SECRET_KEY="ce-projet-est-horrible" \
+     --name msgsvc message-service
+   ```
 
 ---
 
