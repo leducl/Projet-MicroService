@@ -8,8 +8,11 @@
 | Simon    | Absent 1er jour et chepas     |
 
 
-LOG DE L'EQUIPE
-14h00 : Ouverture du Git
-14h01 : Première requêtes ChatGpt réalisé
-14h30 : Début de l'écriture des logs
-14H39 : 
+## LOG DE L'EQUIPE
+
+| Heure | Événement                                 |
+|-------|--------------------------------------------|
+| 14h00 | Ouverture du dépôt Git                     |
+| 14h01 | Première requête ChatGPT réalisée          |
+| 14h30 | Début de l’écriture des logs               |
+| 14h39 | … (À compléter)                            |
