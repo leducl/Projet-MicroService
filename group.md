@@ -2,7 +2,7 @@
 
 | Nom      | Rôle                          |
 |----------|-------------------------------|
-| LEO      | Doc                           |
+| LEO      | Doc / Rédacteur de la log     |
 | Bastien  | Dev                           |
 | Axel     | Tests / un peu de dev         |
 | Simon    | Absent 1er jour et chepas     |
