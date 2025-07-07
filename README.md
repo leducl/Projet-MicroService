@@ -5,7 +5,7 @@ Groupe 2 - message-service - gestion des messages publics, privés et réactions
 
 Interaction a anticiper avec les autres groupes :
 
-| Interaction             | Avec qui ?      | Ce que tu dois faire                                    |
+| Interaction             | Avec qui ?      | Ce qu'on dois faire                                     |
 | ----------------------- | --------------- | ------------------------------------------------------- |
 | Authentification        | user-service    | Lire le JWT, extraire le pseudo                         |
 | Validation d’émetteur   | user-service    | Ne pas faire confiance à un champ `"from"` dans un POST |
