@@ -1,4 +1,4 @@
-
+Membres : LEDUC Léo ; BALMES Bastien ; PEDRERO Axel ; LOURS Simon
 
 | Nom      | Rôle                          |
 |----------|-------------------------------|
