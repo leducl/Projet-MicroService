@@ -1,4 +1,4 @@
-## Route 
+## Routes 
 
 | Méthode | Route                        | Description                             |
 | ------- | ---------------------------- | --------------------------------------- |
@@ -12,3 +12,9 @@
 | GET     | `/msg/pinned?channel={}`     | Messages épinglés dans un canal         |
 | GET     | `/msg/private?from={}&to={}` | Messages privés entre deux utilisateurs |
 | GET     | `/msg/search?q={}`           | Recherche plein texte                   |
+
+## Routes Masquées
+| Méthode | Route                        | Description                             |
+| ------- | ---------------------------- | --------------------------------------- |
+| GET     | `/lastmsg/{id}`              | Retourne le dernier message envoyé par l'utilisateur  |
+
