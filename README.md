@@ -61,6 +61,9 @@ message-service/
 ├── models.py       # (Optionnel) Modèles SQLAlchemy si on passe à MySQL
 ├── requirements.txt# flask, pyjwt, etc.
 ├── Dockerfile      # Conteneurisation
+├── Authors.md      # Conteneurisation
+├── routes.md      # Routes utilisé par le groupe
+├── group.md      # roles de chaque membre + log du projet
 └── README.md       # Documentation du service (ce fichier)
 ```
 
