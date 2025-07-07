@@ -93,33 +93,6 @@ message-service/
 
 ---
 
-## 🚀 Installation et lancement
-
-1. **En local** (sans Docker) :
-
-   ```bash
-   git clone <url-de-votre-dépôt>
-   cd message-service
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   export SECRET_KEY="ce-projet-est-horrible"
-   python app.py
-   ```
-
-   Le service écoute sur `http://localhost:5002`.
-
-2. **Avec Docker** :
-
-   ```bash
-   docker build -t message-service .
-   docker run -d -p 5002:5002 \
-     -e SECRET_KEY="ce-projet-est-horrible" \
-     --name msgsvc message-service
-   ```
-
----
-
 ## 📋 Exemples d’appels
 
 1. **Envoi de message** :
@@ -160,15 +133,3 @@ message-service/
    ```bash
    curl http://localhost:5002/msg/search?q=erreur
    ```
-
----
-
-## 🧪 Tests & évolutions
-
-* **Tests unitaires** : à ajouter dans `tests/` pour chaque route.
-* **Passer à MySQL** : créer `models.py` avec SQLAlchemy, remplacer la liste `MESSAGES`.
-* **Appels aux autres services** : importer `requests` pour interroger `channel-service`.
-
----
-
-> Bon développement ! 🚀
