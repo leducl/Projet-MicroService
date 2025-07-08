@@ -2,7 +2,7 @@
 
 ## Membres
 
-**Membres :** LEDUC Léo, BALMES Bastien, PEDRERO Axel, LOURS Simon
+**Membres :** LEDUC Léo, BALMES Bastien, PEDRERO Axel, LOURS Simon (ABSENT), ChatGPT
 
 | Nom     | Rôle                             |
 | ------- | -------------------------------- |
@@ -10,6 +10,7 @@
 | Bastien | Développeur principal            |
 | Axel    | Tests unitaires / soutien dev    |
 | Simon   | Absent les deux jours            |
+| ChatGPT | Debug / Amélioration de la lisibilité des fichiers Markdown (`README.md`, `routes.md`, `group.md`) : correction orthographique, restructuration des tableaux, ajout de titres explicites, et harmonisation du style |
 
 ---
 
