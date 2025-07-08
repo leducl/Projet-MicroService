@@ -75,7 +75,7 @@ Il s’intègre à l’architecture IRC de CanaDuck et s’appuie sur un JWT fou
 Créez un fichier `.env` à la racine :
 
 ```dotenv
-SECRET_KEY=votre_secret_key
+SECRET_KEY=informations-sur-les-utilisateurs
 DB_URL=MySQL:///instance/messages.db
 ```
 
