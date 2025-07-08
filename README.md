@@ -70,18 +70,7 @@ Il s’intègre à l’architecture IRC de CanaDuck et s’appuie sur un JWT fou
 
 ## ⚙️ Installation & Lancement
 
-### 1. Variables d’environnement
-
-Créez un fichier `.env` à la racine :
-
-```dotenv
-SECRET_KEY=informations-sur-les-utilisateurs
-DB_URL=MySQL:///instance/messages.db
-```
-
-> Par défaut, on utilise MySQL.
-
-### 2. En local (pip)
+### 1. En local (pip)
 
 ```bash
 git clone <votre-repo>
@@ -92,7 +81,7 @@ python -m app.main
 
 L’application écoute sur : `http://localhost:5002`
 
-### 3. En local (Docker)
+### 2. En local (Docker)
 
 ```bash
 docker-compose up --build
