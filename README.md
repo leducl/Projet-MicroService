@@ -1,175 +1,161 @@
-# Message Service (Groupe 2)
+# 📨 Message Service (Groupe 2)
 
-Membres : 
-Leduc Léo - Balmes Bastien - Lours Simon - Pedrero Axel
+**Membres** : Leduc Léo, Balmes Bastien, Lours Simon, Pedrero Axel
 
-Ce micro-service fait partie de l’architecture IRC distribuée de CanaDuck. Il gère
-les messages publics et privés, les réactions, la modification, la suppression,
-les fils de discussion, les épinglés et la recherche.
+Ce micro-service gère les messages publics et privés, les réactions emoji, la modification et suppression de messages, les fils de discussion, les messages épinglés, ainsi que la recherche plein texte. Il fait partie de l'architecture distribuée IRC de CanaDuck.
 
 ---
 
 ## 🎯 Objectif du service
 
-* Recevoir et stocker les messages (canaux publics et messages privés).
-* Gérer les réactions emoji sur chaque message.
-* Permettre l’édition et la suppression des messages (seulement par l’auteur).
-* Offrir des endpoints pour récupérer :
+* Recevoir, stocker et afficher les messages :
 
-  * Tous les messages d’un canal (`GET /msg?channel=...`).
-  * Les messages privés entre deux utilisateurs (`GET /msg/private?from=...&to=...`).
-  * Les réactions (`POST`/`DELETE /msg/reaction`).
-  * Les fils de discussion (`GET /msg/thread/<id>`).
-  * Les messages épinglés (`GET /msg/pinned?channel=...`).
-  * La recherche plein texte (`GET /msg/search?q=...`).
+  * publics dans un canal (`channel`)
+  * privés entre deux utilisateurs (`recipient`)
+* Gérer les réactions emoji (ajout / suppression)
+* Permettre à un utilisateur d’éditer ou supprimer ses propres messages
+* Fournir les fonctionnalités suivantes via des endpoints REST :
 
----
-
-## 🔗 Dépendances inter-groupes
-
-| Service cible       | Groupe | Rôle                      | Interaction technique                         |
-| ------------------- | ------ | ------------------------- | --------------------------------------------- |
-| **user-service**    | 1      | Authentification & JWT    | Décorateur `@require_jwt` ; extraire `pseudo` |
-| **channel-service** | 3      | Gestion des canaux & ACLs | (Optionnel) Vérifier existence et droits      |
-| **gateway-service** | 4      | Proxy public / agrégateur | Toutes les requêtes `/msg*` passent par lui   |
-
-* **user-service** :
-
-  * Envoie un JWT signé contenant `{ pseudo, roles, exp }`.
-  * Notre décorateur lit le header `Authorization: Bearer <token>` et injecte
-    `request.user['pseudo']` pour authentifier les actions.
-
-* **channel-service** :
-
-  * (Optionnel) Appel interne pour vérifier qu’un canal existe et que l’utilisateur
-    a le droit d’y écrire. Pour commencer, on utilise un mock en mémoire.
-
-* **gateway-service** :
-
-  * Point d’entrée unique. Il route `/msg`, `/msg/private`, `/msg/reaction`,
-    etc. vers ce service sur le port interne `5002`.
+  * Liste des messages d’un canal → `GET /msg?channel=...`
+  * Messages privés entre deux pseudos → `GET /msg/private?from=...&to=...`
+  * Ajout / retrait de réactions → `POST` / `DELETE /msg/reaction`
+  * Fil de discussion → `GET /msg/thread/<id>`
+  * Messages épinglés → `GET /msg/pinned?channel=...`
+  * Recherche plein texte → `GET /msg/search?q=...`
 
 ---
 
-## 🏗️ Architecture du projet
+## 🔐 Authentification (JWT)
+
+Toutes les routes nécessitent un **JWT valide** généré par le `user-service`.
+
+* Le token est lu dans le header :
+
+  ```http
+  Authorization: Bearer <token>
+  ```
+* Le décorateur `@require_jwt` injecte automatiquement les infos utilisateur (`user_id`, `username`) dans `request.user`.
+
+---
+
+## 🧱 Structure du projet
 
 ```text
-code/
-├── Dockerfile
-├── README.md               ← README actuel (très succinct)
-├── app/
-│   ├── __init__.py         ← création de l’application Flask
-│   ├── auth.py             ← décorateur JWT
-│   ├── config.py           ← variables d’environnement
-│   ├── main.py             ← point d’entrée (lance le serveur Flask)
-│   ├── models.py           ← modèles SQLAlchemy (Message, Reaction)
-│   └── routes.py           ← toutes les routes HTTP
-├── docker-compose.yml      ← stack MySQL + service Flask
-├── entrypoint.sh           ← attend la disponibilité de MySQL
-├── instance/
-│   └── messages.db         ← base SQLite (probablement résidu)
-├── requirements.txt        ← dépendances Python
-├── Pipfile / Pipfile.lock  ← alternative avec Pipenv
-└── tests/
-    └── test_basic.py       ← test unitaire minimal
+.
+├── Dockerfile              ← Image Docker du service
+├── docker-compose.yml      ← Stack avec MySQL
+├── entrypoint.sh           ← Attend le démarrage de MySQL
+├── .env                    ← Configuration (clé secrète, URL BDD)
+├── Pipfile / Pipfile.lock  ← Gestion des dépendances (pipenv)
+├── requirements.txt        ← Généré depuis pipenv
+├── test_basic.py           ← Test unitaire minimal
+└── app/
+    ├── __init__.py         ← Initialisation Flask, DB, routes
+    ├── main.py             ← Point d’entrée (lance le serveur Flask)
+    ├── config.py           ← Configuration Flask (clé, DB)
+    ├── auth.py             ← Vérification JWT
+    └── models.py / routes.py ← Modèles SQLAlchemy, routes REST
 ```
 
-* **app.py** :
+---
 
-  * Initialise l’app Flask.
-  * Définit le décorateur `require_jwt` pour sécuriser les routes d’écriture.
-  * Implémente les endpoints :
+## ⚙️ Installation et Lancement
 
-    * `POST /msg`, `GET /msg`, `POST`/`DELETE /msg/reaction`,
-    * `PUT`/`DELETE /msg/<id>`, `GET /msg/thread/<id>`,
-    * `GET /msg/pinned`, `GET /msg/private`, `GET /msg/search`.
-  * Stocke temporairement les messages dans une liste Python `MESSAGES`.
+### ▶️ En local (via Pipenv)
 
-* **requirements.txt** :
+```bash
+git clone <votre-repo>
+cd message-service
+pipenv install
+pipenv run python -m app.main
+```
 
-  ```text
-  flask
-  pyjwt
-  ```
+Variables dans `.env` :
 
-* **Dockerfile** :
+```env
+SECRET_KEY=informations-sur-les-utilisateurs
+DB_URL=sqlite:///instance/messages.db
+```
 
-  ```dockerfile
-  FROM python:3.9-slim
-  WORKDIR /app
-  COPY requirements.txt ./
-  RUN pip install --no-cache-dir -r requirements.txt
-  COPY . ./
-  EXPOSE 5002
-  CMD ["python", "app.py"]
-  ```
+### 🐳 Avec Docker
+
+```bash
+docker-compose up --build
+```
+
+Le service écoute sur `http://localhost:5002`.
 
 ---
 
-## 🚀 Installation et lancement
+## 🔗 Dépendances inter-services
 
-1. **En local** (sans Docker) :
-
-   ```bash
-   git clone <url-de-votre-dépôt>
-   cd message-service
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   export SECRET_KEY="ce-projet-est-horrible"
-   python app.py
-   ```
-
-   Le service écoute sur `http://localhost:5002`.
-
-2. **Avec Docker** :
-
-   ```bash
-   docker build -t message-service .
-   docker run -d -p 5002:5002 \
-     -e SECRET_KEY="ce-projet-est-horrible" \
-     --name msgsvc message-service
-   ```
+| Service         | Groupe | Usage principal                    |
+| --------------- | ------ | ---------------------------------- |
+| user-service    | 1      | Authentification via JWT           |
+| channel-service | 3      | (Optionnel) Vérification de canal  |
+| gateway-service | 4      | Reverse proxy de toutes les routes |
 
 ---
 
-## 📋 Exemples d’appels
+## 📚 Routes REST disponibles
 
-1. **Envoi de message** :
+| Méthode | Route                          | Description                             |
+| ------- | ------------------------------ | --------------------------------------- |
+| POST    | `/msg`                         | Envoyer un message                      |
+| GET     | `/msg?channel=...`             | Liste des messages d’un canal           |
+| GET     | `/msg/private?from=...&to=...` | Messages privés entre deux pseudos      |
+| POST    | `/msg/reaction`                | Ajouter une réaction emoji              |
+| DELETE  | `/msg/reaction`                | Supprimer une réaction emoji            |
+| PUT     | `/msg/<id>`                    | Modifier un message (si auteur)         |
+| DELETE  | `/msg/<id>`                    | Supprimer un message (si auteur)        |
+| GET     | `/msg/thread/<id>`             | Réponses à un message                   |
+| GET     | `/msg/pinned?channel=...`      | Messages épinglés d’un canal            |
+| GET     | `/msg/search?q=...`            | Recherche plein texte dans les messages |
 
-   ```bash
-   curl -X POST http://localhost:5002/msg \
-     -H "Authorization: Bearer <token>" \
-     -H "Content-Type: application/json" \
-     -d '{ "channel": "tech", "text": "Salut tout le monde" }'
-   ```
+---
 
-2. **Récupérer les messages d’un canal** :
+## 📊 Exemples d’appels `curl`
 
-   ```bash
-   curl http://localhost:5002/msg?channel=tech
-   ```
+**Envoyer un message :**
 
-3. **Ajouter une réaction** :
+```bash
+curl -X POST http://localhost:5002/msg \
+ -H "Authorization: Bearer <token>" \
+ -H "Content-Type: application/json" \
+ -d '{ "channel": "dev", "text": "Hello world!" }'
+```
 
-   ```bash
-   curl -X POST http://localhost:5002/msg/reaction \
-     -H "Authorization: Bearer <token>" \
-     -H "Content-Type: application/json" \
-     -d '{ "message_id": "<id>", "emoji": "😀" }'
-   ```
+**Ajouter une réaction :**
 
-4. **Modifier un message** :
+```bash
+curl -X POST http://localhost:5002/msg/reaction \
+ -H "Authorization: Bearer <token>" \
+ -H "Content-Type: application/json" \
+ -d '{ "message_id": 1, "emoji": "🔥" }'
+```
 
-   ```bash
-   curl -X PUT http://localhost:5002/msg/<id> \
-     -H "Authorization: Bearer <token>" \
-     -H "Content-Type: application/json" \
-     -d '{ "text": "Nouveau texte" }'
-   ```
+**Modifier un message :**
 
-5. **Recherche plein texte** :
+```bash
+curl -X PUT http://localhost:5002/msg/1 \
+ -H "Authorization: Bearer <token>" \
+ -H "Content-Type: application/json" \
+ -d '{ "text": "Message modifié" }'
+```
 
-   ```bash
-   curl http://localhost:5002/msg/search?q=erreur
-   ```
+**Recherche plein texte :**
+
+```bash
+curl http://localhost:5002/msg/search?q=erreur \
+ -H "Authorization: Bearer <token>"
+```
+
+---
+
+## ✅ Tests
+
+```bash
+pipenv run python test_basic.py
+```
+
+Un test basique vérifie que `/msg` sans JWT retourne bien un `401 Unauthorized`.
