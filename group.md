@@ -1,4 +1,4 @@
-# 📅 group.md - Message Service (Groupe 2)
+# 📅 group.md - Message Service
 
 ## Membres
 
