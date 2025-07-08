@@ -51,12 +51,12 @@ Il s’intègre à l’architecture IRC de CanaDuck et s’appuie sur un JWT fou
 ```
 
 * **Dockerfile** : construction de l’image Docker
-* **docker-compose.yml** : stack Docker (BDD MySQL ou volume SQLite)
+* **docker-compose.yml** : stack Docker (BDD MySQL)
 * **entrypoint.sh** : script d’attente du service de BDD et lancement des migrations
 * **.env** : variables d’environnement (SECRET\_KEY, DB\_URL)
 * **requirements.txt** : dépendances Python
 * **test.sh** : script d’intégration (bash + curl)
-* **instance/messages.db** : base SQLite (volume local)
+* **instance/messages.db** : base MySQL (volume local)
 * **app/** : code de l’application Flask
 
   * `__init__.py` : création de l’app, configuration SQLAlchemy, migrations
@@ -76,10 +76,10 @@ Créez un fichier `.env` à la racine :
 
 ```dotenv
 SECRET_KEY=votre_secret_key
-DB_URL=sqlite:///instance/messages.db
+DB_URL=MySQL:///instance/messages.db
 ```
 
-> Par défaut, on utilise SQLite. Pour MySQL, ajustez `DB_URL` et `docker-compose.yml`.
+> Par défaut, on utilise MySQL.
 
 ### 2. En local (pip)
 
@@ -98,7 +98,7 @@ L’application écoute sur : `http://localhost:5002`
 docker-compose up --build
 ```
 
-* Le conteneur MySQL ou le volume SQLite est initialisé via `entrypoint.sh`.
+* Le conteneur MySQL est initialisé via `entrypoint.sh`.
 * L’app se lance automatiquement sur le port 5002.
 
 ---
