@@ -5,7 +5,7 @@ Membres : LEDUC Léo ; BALMES Bastien ; PEDRERO Axel ; LOURS Simon
 | LEO      | Doc / Rédacteur de la log     |
 | Bastien  | Dev                           |
 | Axel     | Tests / un peu de dev         |
-| Simon    | Absent 1er jour et chepas     |
+| Simon    | Absent les 2 jours..     |
 
 
 ## LOG DE L'EQUIPE
