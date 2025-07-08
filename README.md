@@ -1,6 +1,6 @@
 # 📨 Message Service (Groupe 2)
 
-**Membres** : Leduc Léo, Balmes Bastien, Lours Simon, Pedrero Axel
+**Membres** : Leduc Léo, Balmes Bastien, Pedrero Axel et Lours Simon (Absent)
 
 Ce micro-service gère les messages publics et privés, les réactions emoji, la modification et suppression de messages, les fils de discussion, les messages épinglés, ainsi que la recherche plein texte. Il fait partie de l'architecture distribuée IRC de CanaDuck.
 
