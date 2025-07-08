@@ -54,17 +54,24 @@ les fils de discussion, les épinglés et la recherche.
 ## 🏗️ Architecture du projet
 
 ```text
-message-service/
-├── app.py          # Entrée Flask avec toutes les routes
-├── config.py       # (Optionnel) Configuration et variables d’environnement
-├── utils.py        # (Optionnel) Fonctions utilitaires et validateurs
-├── models.py       # (Optionnel) Modèles SQLAlchemy si on passe à MySQL
-├── requirements.txt# flask, pyjwt, etc.
-├── Dockerfile      # Conteneurisation
-├── Authors.md      # Conteneurisation
-├── routes.md      # Routes utilisé par le groupe
-├── group.md      # roles de chaque membre + log du projet
-└── README.md       # Documentation du service (ce fichier)
+code/
+├── Dockerfile
+├── README.md               ← README actuel (très succinct)
+├── app/
+│   ├── __init__.py         ← création de l’application Flask
+│   ├── auth.py             ← décorateur JWT
+│   ├── config.py           ← variables d’environnement
+│   ├── main.py             ← point d’entrée (lance le serveur Flask)
+│   ├── models.py           ← modèles SQLAlchemy (Message, Reaction)
+│   └── routes.py           ← toutes les routes HTTP
+├── docker-compose.yml      ← stack MySQL + service Flask
+├── entrypoint.sh           ← attend la disponibilité de MySQL
+├── instance/
+│   └── messages.db         ← base SQLite (probablement résidu)
+├── requirements.txt        ← dépendances Python
+├── Pipfile / Pipfile.lock  ← alternative avec Pipenv
+└── tests/
+    └── test_basic.py       ← test unitaire minimal
 ```
 
 * **app.py** :
